@@ -12,6 +12,10 @@
   --transitional-color: red;
 }
 
+html {
+  touch-action: none;
+}
+
 @keyframes blocker-transition {
   from {
     backdrop-filter: blur(100px);
@@ -62,6 +66,7 @@ h1 #eye {
   --eye-y: 0;
   --eye-x-squish: 0.45;
   --eye-y-squish: 0.6;
+  --eye-pupil-movement-speed: 50ms;
 
   transform: scaleY(calc(var(--eye-height) * 0.95 + 0.05));
   display: flex;
@@ -76,27 +81,26 @@ h1 #eye {
 
 @keyframes eye-in {
   from {
-    opacity: 0;
+    height: 0;
   }
   to {
-    opacity: 1;
+    height: 20%;
   }
 }
 
 h1 #eye::after {
   content: '';
-  opacity: 0;
   position: absolute;
   top: calc(50% + (var(--eye-y) * var(--eye-y-squish) * 50%));
   left: calc((50% + (var(--eye-x) * var(--eye-x-squish) * 50%)));
   width: 20%;
   height: 20%;
-  background: var(---);
+  background: var(--transitional-color);
   border-radius: 100%;
   transform: translate(-50%, -50%);
 
-  animation: 3s ease 1.5s 1 normal forwards running eye-in;
-  transition: 20ms top ease-in, 20ms left ease-in;
+  animation: 200ms ease 2s 1 normal both running eye-in;
+  transition: var(--eye-pupil-movement-speed) top ease-in, var(--eye-pupil-movement-speed) left ease-in;
 }
 
 h1 #eye span {

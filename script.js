@@ -39,9 +39,11 @@ class EyeController {
   blinkTime = 150;
   eyeElement = null;
   inactiveTime = 5000;
+  mouseLookPupilSpeed = 20;
   minWanderInterval = 1000;
   maxWanderInterval = 4000;
   maxWanderDistance = 20;
+  wanderPupilSpeed = 250;
   wanderTimeout = -1;
   inactiveTimeout = -1;
 
@@ -53,10 +55,11 @@ class EyeController {
     const rX = centre.x + (r1 * this.maxWanderDistance);
     const rY = centre.y + (r2 * this.maxWanderDistance);
 
-    this.lookAt(rX, rY);
+    this.lookAt(rX, rY, this.wanderPupilSpeed);
   }
 
-  lookAt(x, y) {
+  lookAt(x, y, speed) {
+    this.setPupilSpeed(speed);
     const centre = this.getEyeCenter();
 
     const dX = x - centre.x;
@@ -95,13 +98,17 @@ class EyeController {
     this.eyeElement.style.setProperty("--eye-height", `${value}`);
   }
 
+  setPupilSpeed(speed) {
+    this.eyeElement.style.setProperty("--eye-pupil-movement-speed", `${speed}ms`);
+  }
+
   blinkTrigger() {
     const timeout = (Math.random() * (this.maxBlinkInterval - this.minBlinkInterval)) + this.minBlinkInterval;
     setTimeout(this.blink.bind(this), timeout);
   }
 
   moveEvent(e) {
-    this.lookAt(e.pageX, e.pageY);
+    this.lookAt(e.pageX, e.pageY, this.mouseLookPupilSpeed);
 
     if (this.wanderTimeout !== -1) {
       clearTimeout(this.wanderTimeout);
@@ -119,11 +126,11 @@ class EyeController {
     this.wanderTimeout = setTimeout(this.wander.bind(this), timeout);
   }
 
-  setup() {
+  init() {
     this.eyeElement = document.querySelector("#eye");
-    
+
     if (this.eyeElement == null) {
-      throw `eye element could not be found based on ID: '${id}'`;
+      throw `EyeController.init(): failed to find eye element!`;
     }
     this.restorePupil();
     this.blinkTrigger();
@@ -137,5 +144,5 @@ class EyeController {
   start();
   setInterval(update, 1000 / 10);
   const e = new EyeController();
-  e.setup();
+  e.init();
 })();
